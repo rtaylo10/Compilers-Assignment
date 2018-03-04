@@ -1,5 +1,6 @@
 class Token {
 
+  /*Token names (as seen in the cminus.flex file)*/
   public final static int ERROR = 0;
   public final static int ELSE = 1;
   public final static int IF = 2;
@@ -12,11 +13,13 @@ class Token {
   public final static int NUM = 9;
   public final static int UNKNOWN = 10;
 
+  /*Attributes of the tokens*/
   public int m_type;
   public String m_value;
   public int m_line;
   public int m_column;
   
+  /*Token structure which will be created in the cminus.flex file*/
   Token (int type, String value, int line, int column) {
     m_type = type;
     m_value = value;
@@ -24,6 +27,9 @@ class Token {
     m_column = column;
   }
 
+  /*For regular tokens, just re-print the token.
+  For tokens with information inside, print the name
+  along with the information in brackets*/
   public String toString() {
     switch (m_type) {
       case ELSE:

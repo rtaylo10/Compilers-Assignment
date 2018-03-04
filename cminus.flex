@@ -91,7 +91,8 @@ closeSymbol = ")"|"]"|"}"|"*/"
 /*
    This section contains regular expressions and actions, i.e. Java
    code, that will be executed when the scanner matches the associated
-   regular expression. */
+   regular expression. 
+   Each symbol first checks if it is part of a comment before returning a token*/
    
 "else"            { if (isInComment() == 0){return new Token(Token.ELSE, yytext(), yyline, yycolumn);}}
 "if"              { if (isInComment() == 0){return new Token(Token.IF, yytext(), yyline, yycolumn);}}
@@ -99,20 +100,27 @@ closeSymbol = ")"|"]"|"}"|"*/"
 "return"          { if (isInComment() == 0){return new Token(Token.RETURN, yytext(), yyline, yycolumn);}}
 "void"            { if (isInComment() == 0){return new Token(Token.VOID, yytext(), yyline, yycolumn);}}
 "while"           { if (isInComment() == 0){return new Token(Token.WHILE, yytext(), yyline, yycolumn);}}
-{openSymbol}      { if (isInComment() == 0){addOpenSymbol(yytext());
+{openSymbol}      { if (isInComment() == 0){
+                      /*Adds the symbol to the symbol array, then returns a token with it*/
+                      addOpenSymbol(yytext());
                       return new Token(Token.SPECIAL, yytext(), yyline, yycolumn);
-                  }}
-{closeSymbol}     { int isError = checkCloseSymbol(yytext());
-                    if (isInComment() == 0 || yytext().equals("/*")){ if (isError == 0){
-                      return new Token(Token.SPECIAL, yytext(), yyline, yycolumn);
-                    }else if (isError == 1){
-                      System.err.println(getMatchingOpenSymbol(yytext()) + " expected at line " + yyline);
-                      return new Token(Token.ERROR, yytext(), yyline, yycolumn);
-                    }else if (isError == 2){
-                      System.err.println(yytext() + " unexpected at line " + yyline);
-                      return new Token(Token.ERROR, yytext(), yyline, yycolumn);
                     }
-                  }}
+                  }
+{closeSymbol}     { /*Checks for errors related to mismatched starting/ending symbols,
+                      Then returns either a token or an error message*/
+
+                      int isError = checkCloseSymbol(yytext());
+                      if (isInComment() == 0 || yytext().equals("/*")){ if (isError == 0){
+                        return new Token(Token.SPECIAL, yytext(), yyline, yycolumn);
+                      }else if (isError == 1){
+                        System.err.println(getMatchingOpenSymbol(yytext()) + " expected at line " + yyline);
+                        return new Token(Token.ERROR, yytext(), yyline, yycolumn);
+                      }else if (isError == 2){
+                        System.err.println(yytext() + " unexpected at line " + yyline);
+                        return new Token(Token.ERROR, yytext(), yyline, yycolumn);
+                      }
+                    }
+                  }
 {specialSymbol}   { if (isInComment() == 0){return new Token(Token.SPECIAL, yytext(), yyline, yycolumn);}}
 {letter}{letter}* { if (isInComment() == 0){return new Token(Token.ID, yytext(), yyline, yycolumn);}}
 {digit}{digit}*   { if (isInComment() == 0){return new Token(Token.NUM, yytext(), yyline, yycolumn);}}
