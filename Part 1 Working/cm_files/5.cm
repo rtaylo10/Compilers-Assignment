@@ -1,0 +1,13 @@
+/* A program to compute the factorial value of an input	- This is actually in the tiny language, in order to test if the compiler can handle that amount of errors (this file was taken from the java_tiny example on the course website) */
+
+{ Sample program in Tiny language - compute factorial }
+
+read x; { input an integer }
+if x > 0 then { don't compute if x <= 0 }
+  fact := 1;
+  repeat 
+    fact := fact * x;
+    x := x - 1
+  until x = 0;
+  write fact { output factorial of x }
+end

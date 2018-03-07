@@ -14,3 +14,5 @@ generate an executable program called "tiny".
 and the syntax tree will be displayed on the screen.
 
   To rebuild the parser, type "make clean" and type "make" again.
+
+The "test_cm" folder contains test files that we would use to check for errors
