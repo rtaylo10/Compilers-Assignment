@@ -229,6 +229,8 @@ var                 ::= ID:i
                         {: RESULT = new VarExp(ileft, new SimpleVar(ileft, i)); :}
                     | ID:i LSQRBRA expression:e RSQRBRA
                         {: RESULT = new VarExp(ileft, new IndexVar(ileft, i, e)); :}
+                    | error
+                        {: RESULT = new VarExp(); :}
                     ;
 
 simpleexpression   ::= additiveexpression:ae1 LESSOREQ additiveexpression:ae2

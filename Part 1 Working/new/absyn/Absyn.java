@@ -120,7 +120,12 @@ abstract public class Absyn {
     indent( spaces );
     System.out.println( "VarExp: "); 
     spaces+= SPACES;
-    showTree(tree.variable, spaces);
+    if (tree.variable == (null)) {
+        System.out.println ( "ERROR INVALID VAREXP");
+    }
+    else {
+      showTree(tree.variable, spaces);
+    }
   }
   static public void showTree( IntExp tree, int spaces) {
     indent( spaces );

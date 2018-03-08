@@ -1,4 +1,4 @@
-/* this c- program has two errors, and invalid statement in the while loops condition, and an invalid variable name in the second line */
+
 void main(void) {
   int x; int f1a2c;
   x = input();

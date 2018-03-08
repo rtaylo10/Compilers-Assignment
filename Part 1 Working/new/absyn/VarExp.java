@@ -6,4 +6,8 @@ public class VarExp extends Exp {
     this.pos = pos;
     this.variable = variable;
   }
+  public VarExp() {
+    this.variable = null;
+
+  }
 }

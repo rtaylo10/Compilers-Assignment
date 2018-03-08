@@ -1,6 +1,6 @@
-/*This otherwise syntactically correct c- program has two invalid type names at the beginning*/
+/* A program to compute the factorial value of an input */
 void main(void) {
-  bad x; Snap fac;
+  int x; int fac;
   x = input();
   fac = 1;
 
