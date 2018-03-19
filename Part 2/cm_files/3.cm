@@ -1,0 +1,13 @@
+/*This otherwise syntactically correct c- program has two invalid type names at the beginning*/
+void main(void) {
+  bad x; Snap fac;
+  x = input();
+  fac = 1;
+
+  while (x > 1) {
+    fac = fac * x;
+    x = x - 1;
+  } 
+
+  output(fac);
+}
