@@ -1,4 +1,4 @@
-package symTable;
+package symtable;
 
 abstract public class ConstSym extends Sym {
 	public String value;

@@ -1,4 +1,4 @@
-package symTable;
+package symtable;
 
 abstract public class VarSym extends Sym {
 	public TypeSym type;

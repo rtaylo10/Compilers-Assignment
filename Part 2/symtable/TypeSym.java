@@ -1,4 +1,4 @@
-package symTable;
+package symtable;
 
 abstract public class TypeSym extends Sym {
 	public String typeName;

@@ -1,4 +1,4 @@
-package symTable;
+package symtable;
 
 abstract public class FunSym extends Sym {
 	public SymTable child;

@@ -7,7 +7,7 @@ CUP=cup
 
 all: Main.class
 
-Main.class: symTable/*.java absyn/*.java parser.java sym.java Lexer.java Scanner.java Main.java
+Main.class: symtable/*.java absyn/*.java parser.java sym.java Lexer.java Scanner.java Main.java
 
 %.class: %.java
 	$(JAVAC) $(CLASSPATH)  $^
