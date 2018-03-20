@@ -1,6 +1,6 @@
 package symtable;
 
-abstract public class TypeSym extends Sym {
+public class TypeSym extends Sym {
 	public String typeName;
 
 	public TypeSym(String name, String typeName){

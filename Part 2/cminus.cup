@@ -220,7 +220,7 @@ returnstmt         ::= RETURN:r SEMI
                     ;
 
 expression          ::= var:v EQ expression:e
-                        {: RESULT = new OpExp(vleft, v, OpExp.EQ, e); :} 
+                        {: RESULT = new AssignExp(vleft, v, e); :} 
                     | simpleexpression:se
                         {: RESULT = se; :}
                     ;

@@ -1,6 +1,6 @@
 package symtable;
 
-abstract public class ConstSym extends Sym {
+public class ConstSym extends Sym {
 	public String value;
 
 	public ConstSym(String name, String value){
