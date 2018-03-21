@@ -7,7 +7,8 @@ public class SymTable{
 	final static int MAXSIZE = 19937;
 	final static int SHIFT = 4;
 	final static int SPACES = 4;
-	final static boolean SHOW_TABLE = true;
+
+	public static boolean SHOW_TABLE = false;
 
 	public Hashtable<Integer, Sym> vals;
 	public int scope = 0;
@@ -181,13 +182,27 @@ public class SymTable{
 
 
 	//Printing Functions
-	public void printError(String e){
-		System.err.println(e);
-	}
-
 	public String getSpaces(){
 		String spaces = "";
 		for (int i = 0; i < scope; i++){
+			for (int j = 0; j < SPACES; j++){
+				spaces = spaces + " ";
+			}
+		}
+		return spaces;
+	}
+
+	public String getSpaces(Sym s){
+		int nSpaces = 0;
+		String spaces = "";
+		if (s instanceof VarSym){
+			nSpaces = ((VarSym)s).scope;
+		}else if (s instanceof FunSym){
+			nSpaces = ((FunSym)s).scope;
+		}else{
+			nSpaces = 0;
+		}
+		for (int i = 0; i < nSpaces; i++){
 			for (int j = 0; j < SPACES; j++){
 				spaces = spaces + " ";
 			}
@@ -228,35 +243,51 @@ public class SymTable{
 		Enumeration<Sym> e;
 		for(e = vals.elements(); e.hasMoreElements();){
 			Sym temp = lookupDeepestVal(e.nextElement().name);
-			String indentation = getSpaces();
+			String indentation = getSpaces(temp);
 			String symType = getSymType(temp);
 			String varType = getVarType(temp);
-			System.out.println(indentation + " " + varType + " " + symType + ": " + temp.name);
+			System.out.println(indentation + varType + " " + symType + ": " + temp.name);
 		}
 	}
 
+	public void printError(String e){
+		System.err.println(e);
+	}
+
 	public void startBlock(){
-		printTable();
+		if (SHOW_TABLE == true){
+			printTable();
+		}
 		this.scope = this.scope + 1;
-		System.out.println("Entering Block");
+		if (SHOW_TABLE == true){
+			System.out.println("Entering Block");
+		}
 	}
 
 	public void startBlock(String blockName){
-		printTable();
+		if (SHOW_TABLE == true){
+			printTable();
+		}
 		this.scope = this.scope + 1;
-		System.out.println("Entering Block " + blockName);
+		if (SHOW_TABLE == true){
+			System.out.println("Entering Block " + blockName);
+		}
 	}
 
 	public void endBlock(){
-		printTable();
-		System.out.println("Exiting Block");
+		if (SHOW_TABLE == true){
+			printTable();
+			System.out.println("Exiting Block");
+		}
 		cleanTableToScope(this.scope);
 		this.scope = this.scope - 1;
 	}
 
 	public void endBlock(String blockName){
-		printTable();
-		System.out.println("Exiting Block " + blockName);
+		if (SHOW_TABLE == true){
+			printTable();
+			System.out.println("Exiting Block " + blockName);
+		}
 		cleanTableToScope(this.scope);
 		this.scope = this.scope - 1;
 	}

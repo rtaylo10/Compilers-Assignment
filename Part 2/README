@@ -11,7 +11,9 @@ generate an executable program called "tiny".
 
     "java -classpath java-cup-11b.jar:. Main fac.cm" 
 
-and the syntax tree will be displayed on the screen.
+  To print the symbol table, add -s to the end of the command like 
+
+    "java -classpath java-cup-11b.jar:. Main fac.cm -s"
 
   To rebuild the parser, type "make clean" and type "make" again.
 

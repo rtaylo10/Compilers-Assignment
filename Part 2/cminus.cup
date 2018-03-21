@@ -94,8 +94,10 @@ start with program;
 
 program     ::= declarationlist:dl
                 {: RESULT = dl;
-                    System.out.println( "The abstract syntax tree is:" );
-                    Absyn.showTree( RESULT, 0 );
+                    if (parser.SHOW_TREE) {
+                        System.out.println( "The abstract syntax tree is:" );
+                        Absyn.showTree( RESULT, 0 );
+                    }
                 :}
             ;
 
