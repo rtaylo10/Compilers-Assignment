@@ -343,40 +343,41 @@ public class SymTable{
 		} 
 	}
 
-	public void createSymFromExp( Var tree ) {
+	public String createSymFromExp( Var tree ) {
 		if( tree instanceof IndexVar )
-			createSymFromExp( (IndexVar)tree );
+			return createSymFromExp( (IndexVar)tree );
 		else if( tree instanceof SimpleVar )
-			createSymFromExp( (SimpleVar)tree );
+			return createSymFromExp( (SimpleVar)tree );
 		else {
 			System.err.println( "Illegal expression at line " + tree.pos  );
+			return "ERR";
 		}
 	}
 
-	public void createSymFromExp( Exp tree ) {
+	public String createSymFromExp( Exp tree ) {
 		if( tree instanceof NilExp )
-			createSymFromExp( (NilExp)tree );
+			return createSymFromExp( (NilExp)tree );
 		else if( tree instanceof VarExp )
-			createSymFromExp( (VarExp)tree );
+			return createSymFromExp( (VarExp)tree );
 		else if( tree instanceof IntExp )
-			createSymFromExp( (IntExp)tree );
+			return createSymFromExp( (IntExp)tree );
 		else if( tree instanceof CallExp )
-			createSymFromExp( (CallExp)tree );
+			return createSymFromExp( (CallExp)tree );
 		else if( tree instanceof OpExp )
-			createSymFromExp( (OpExp)tree );
+			return createSymFromExp( (OpExp)tree );
 		else if( tree instanceof AssignExp )
-			createSymFromExp( (AssignExp)tree );
+			return createSymFromExp( (AssignExp)tree );
 		else if( tree instanceof IfExp )
-			createSymFromExp( (IfExp)tree );
+			return createSymFromExp( (IfExp)tree );
 		else if( tree instanceof WhileExp )
-			createSymFromExp( (WhileExp)tree );
+			return createSymFromExp( (WhileExp)tree );
 		else if( tree instanceof ReturnExp )
-			createSymFromExp( (ReturnExp)tree );
+			return createSymFromExp( (ReturnExp)tree );
 		else if( tree instanceof CompoundExp )
-			createSymFromExp( (CompoundExp)tree );
+			return createSymFromExp( (CompoundExp)tree );
 		else {
-			
 			System.err.println( "Illegal expression at line " + tree.pos  );
+			return "ERR";
 		}
 	}
 
@@ -386,7 +387,6 @@ public class SymTable{
 		}else if( tree instanceof VarDec ){
 			createSymFromExp( (VarDec)tree );
 		}else {
-			
 			System.err.println( "Illegal expression at line " + tree.pos  );
 		}
 	}
@@ -408,46 +408,67 @@ public class SymTable{
 		}else if (tree.typ == NameTy.VOID){
 			return "VOID";
 		}else{
-			System.err.println( "Illegal type name at position " + tree.pos  );
+			printError( "Illegal type name at position " + tree.pos  );
 			return "ERR";
 		}
 	}
 
   /* Variables */
-	public void createSymFromExp( SimpleVar tree ) {
-		// System.out.println( "SimpleVar: " + tree.name); 
+	public String createSymFromExp( SimpleVar tree ) {
+		return getDeepestType(tree.name);
 	}
 
-	public void createSymFromExp( IndexVar tree) {
-		createSymFromExp(tree.index); 
+	public String createSymFromExp( IndexVar tree) {
+		String type = createSymFromExp(tree.index); 
+		if (type.equals("INT")){
+			//Good
+		}else{
+			printError("Error at line " + tree.pos + " - Array index call uses a type other than int");
+		}
+		return getDeepestType(tree.name);
 	}
 
   /* Expressions */
-	public void createSymFromExp( NilExp tree) {
+	public String createSymFromExp( NilExp tree) {
+		return "NULL";
 	}
-	public void createSymFromExp( VarExp tree) {
+	public String createSymFromExp( VarExp tree) {
 		if (tree.variable == (null)) {
-			System.err.println ( "ERROR INVALID VAREXP");
-		}
-		else {
-			createSymFromExp(tree.variable);
+			printError( "ERROR INVALID VAREXP");
+			return "NULL";
+		} else {
+			return createSymFromExp(tree.variable);
 		}
 	}
-	public void createSymFromExp( IntExp tree) {
-
+	public String createSymFromExp( IntExp tree) {
+		return "INT";
 	}
-	public void createSymFromExp( CallExp tree) {
+	public String createSymFromExp( CallExp tree) {
 		createSymFromExp(tree.args);
+
+		return getDeepestType(tree.func);
 	}
-	public void createSymFromExp( OpExp tree) {
-		createSymFromExp( tree.left );
-		createSymFromExp( tree.right ); 
+	public String createSymFromExp( OpExp tree) {
+		String type1 = createSymFromExp( tree.left );
+		String type2 = createSymFromExp( tree.right ); 
+		if (type1.equals(type2)){
+			return type1;
+		}else{
+			printError("Error at line " + tree.pos + " - Performing operation on two variables of different types");
+			return "ERR";
+		}
 	}
-	public void createSymFromExp( AssignExp tree) {
-		createSymFromExp(tree.lhs);
-		createSymFromExp(tree.rhs);
+	public String createSymFromExp( AssignExp tree) {
+		String type1 = createSymFromExp(tree.lhs);
+		String type2 = createSymFromExp(tree.rhs);
+		if (type1.equals(type2)){
+			return type1;
+		}else{
+			printError("Error at line " + tree.pos + " - Assigning a variable to a value of a different type");
+			return "ERR";
+		}
 	}
-	public void createSymFromExp( IfExp tree) {
+	public String createSymFromExp( IfExp tree) {
 		startBlock("If Test Condition");
 		createSymFromExp(tree.test);
 		endBlock("If Test Condition"); 
@@ -459,8 +480,10 @@ public class SymTable{
 		startBlock("Else Body");
 		createSymFromExp(tree.els);
 		endBlock("Else Body");
+
+		return "";
 	}
-	public void createSymFromExp( WhileExp tree) {
+	public String createSymFromExp( WhileExp tree) {
 		startBlock("While Test Condition");
 		createSymFromExp(tree.test);
 		endBlock("While Test Condition");
@@ -468,14 +491,20 @@ public class SymTable{
 		startBlock("While Body");
 		createSymFromExp(tree.body);
 		endBlock("While Body"); 
+
+		return "";
 	}
-	public void createSymFromExp( ReturnExp tree) {
-		createSymFromExp(tree.exp);
+	public String createSymFromExp( ReturnExp tree) {
+		return createSymFromExp(tree.exp);
 	}
-	public void createSymFromExp( CompoundExp tree) {
+	public String createSymFromExp( CompoundExp tree) {
 		createSymFromExp(tree.decs);
 		createSymFromExp(tree.exps);
+
+		return "";
 	}
+
+	/* Declarations */
 	public void createSymFromExp( FunctionDec tree) {
 		FunSym s = new FunSym(tree.func, createSymFromExp(tree.result), this.scope);
 		insertIntoTable(vals, s);
