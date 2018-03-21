@@ -143,6 +143,16 @@ public class SymTable{
 		}
 	}
 
+	public String getDeepestType(String name){
+		Sym s = lookupDeepestVal(name);
+		if (s instanceof VarSym){
+			return ((VarSym)s).type;
+		}else if (s instanceof FunSym){
+			return ((FunSym)s).type;
+		}
+		return "";
+	}
+
 	//When given the name of a symbol, returns whether or not it is in the table
 	public boolean valExists(String name){
 		Sym s = lookupVal(name);
