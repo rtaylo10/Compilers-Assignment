@@ -12,6 +12,7 @@ public class SymTable{
 
 	public Hashtable<Integer, Sym> vals;
 	public int scope = 0;
+	public FunSym currentFunction;
 
 	public SymTable(){
 		vals = new Hashtable<Integer, Sym>();
@@ -83,17 +84,17 @@ public class SymTable{
 						if (((VarSym)temp).scope != ((VarSym)s).scope){
 							((VarSym)temp).child = ((VarSym)s);
 						}else{
-							printError("adding two variables of the same name in the same scope");
+							printError("Multiple variable declarations of " + s.name + " in the same scope");
 						}
 					}else{
-						printError("adding a non-variable with the same name as a variable in a higher scope");
+						printError("Attempting to declare a function " + s.name + " with the same name as an existing variable");
 					}
 				}else{
-					printError("adding a variable with the same name as a non-variable");
+					printError("Attempting to declare a variable " + s.name + " with the same name as an existing function");
 				}
 			}
 		}else{
-			printError("adding two variables of the same name in the same scope");
+			printError("Multiple variable declarations of " + s.name + " in the same scope");
 		}
 	}
 
@@ -150,7 +151,51 @@ public class SymTable{
 		}else if (s instanceof FunSym){
 			return ((FunSym)s).type;
 		}
+		return "UND";
+	}
+
+	public String getCurrentFunctionName(){
+		if (currentFunction != null){
+			while(currentFunction.next != null){
+				currentFunction = currentFunction.next;
+			}
+			return currentFunction.name;
+		}
 		return "";
+	}
+
+	public String getCurrentReturnType(){
+		if (currentFunction != null){
+			while(currentFunction.next != null){
+				currentFunction = currentFunction.next;
+			}
+			return currentFunction.type;
+		}
+		return "UND";
+	}
+
+	public void increaseCurrentFunction(String name){
+		FunSym func = (FunSym)lookupDeepestVal(name);
+		if (currentFunction == null){
+			currentFunction = new FunSym(func.name, func.type, func.scope);
+		}else{
+			currentFunction.next = new FunSym(func.name, func.type, func.scope);
+		}
+	}
+
+	public void decreaseCurrentFunction(){
+		if (currentFunction != null){
+			if (currentFunction.next != null){
+				FunSym temp1 = currentFunction;
+				while(temp1.next != null){
+					currentFunction = currentFunction.next;
+					temp1 = currentFunction.next;
+				}
+				currentFunction.next = null;
+			}else{
+				currentFunction = null;
+			}
+		}
 	}
 
 	//When given the name of a symbol, returns whether or not it is in the table
@@ -232,8 +277,7 @@ public class SymTable{
 		}else if(s instanceof TypeSym){
 			return "Type";
 		}else{
-			printError("Error - Invalid symbol type");
-			return "";
+			return "UND";
 		}
 	}
 
@@ -245,7 +289,7 @@ public class SymTable{
 		}else if(s instanceof SimpleVarSym){
 			return ((SimpleVarSym)s).type;
 		}else{
-			return "";
+			return "UND";
 		}
 	}
 
@@ -261,7 +305,11 @@ public class SymTable{
 	}
 
 	public void printError(String e){
-		System.err.println(e);
+		System.err.println("Error - " + e);
+	}
+
+	public void printError(String e, int pos){
+		System.err.println("Error: Line " + pos + " - " + e);
 	}
 
 	public void startBlock(){
@@ -318,7 +366,7 @@ public class SymTable{
 		else if( tree instanceof ExpList )
 			createSymFromExp( (ExpList)tree );
 		else {
-			System.err.println( "Illegal expression at line " + tree.pos  );
+			printError( "Illegal Absyn type in AST", tree.pos);
 		}
 	}
 
@@ -349,7 +397,7 @@ public class SymTable{
 		else if( tree instanceof SimpleVar )
 			return createSymFromExp( (SimpleVar)tree );
 		else {
-			System.err.println( "Illegal expression at line " + tree.pos  );
+			printError( "Illegal Var type in AST", tree.pos);
 			return "ERR";
 		}
 	}
@@ -376,7 +424,7 @@ public class SymTable{
 		else if( tree instanceof CompoundExp )
 			return createSymFromExp( (CompoundExp)tree );
 		else {
-			System.err.println( "Illegal expression at line " + tree.pos  );
+			printError( "Illegal Exp type in AST", tree.pos);
 			return "ERR";
 		}
 	}
@@ -387,7 +435,7 @@ public class SymTable{
 		}else if( tree instanceof VarDec ){
 			createSymFromExp( (VarDec)tree );
 		}else {
-			System.err.println( "Illegal expression at line " + tree.pos  );
+			printError( "Illegal Dec type in AST", tree.pos);
 		}
 	}
 
@@ -398,7 +446,7 @@ public class SymTable{
 			createSymFromExp( (ArrayDec)tree );
 		}else {
 			
-			System.err.println( "Illegal expression at line " + tree.pos  );
+			printError( "Illegal VarDec type in AST", tree.pos);
 		}
 	}
 
@@ -408,33 +456,41 @@ public class SymTable{
 		}else if (tree.typ == NameTy.VOID){
 			return "VOID";
 		}else{
-			printError( "Illegal type name at position " + tree.pos  );
+			printError( "Illegal NameTy type in AST", tree.pos);
 			return "ERR";
 		}
 	}
 
   /* Variables */
 	public String createSymFromExp( SimpleVar tree ) {
-		return getDeepestType(tree.name);
+		String type = getDeepestType(tree.name);
+		if (type.equals("UND")){
+			printError("Variable " + tree.name + " is not defined", tree.pos);
+		}
+		return type;
 	}
 
 	public String createSymFromExp( IndexVar tree) {
-		String type = createSymFromExp(tree.index); 
-		if (type.equals("INT")){
+		String indexType = createSymFromExp(tree.index); 
+		String type = getDeepestType("tree.name");
+		if (indexType.equals("INT")){
 			//Good
 		}else{
-			printError("Error at line " + tree.pos + " - Array index call uses a type other than int");
+			printError("Array index call uses a type other than int", tree.pos);
+		}
+		if (type.equals("UND")){
+			printError("Variable " + tree.name + " is not defined", tree.pos);
 		}
 		return getDeepestType(tree.name);
 	}
 
-  /* Expressions */
+  	/* Expressions */
 	public String createSymFromExp( NilExp tree) {
 		return "NULL";
 	}
 	public String createSymFromExp( VarExp tree) {
 		if (tree.variable == (null)) {
-			printError( "ERROR INVALID VAREXP");
+			printError( "VarExp does not have a valid variable type", tree.pos);
 			return "NULL";
 		} else {
 			return createSymFromExp(tree.variable);
@@ -445,8 +501,11 @@ public class SymTable{
 	}
 	public String createSymFromExp( CallExp tree) {
 		createSymFromExp(tree.args);
-
-		return getDeepestType(tree.func);
+		String type = getDeepestType(tree.func);
+		if (type.equals("UND")){
+			printError( "Function not defined", tree.pos);
+		}
+		return type;
 	}
 	public String createSymFromExp( OpExp tree) {
 		String type1 = createSymFromExp( tree.left );
@@ -454,7 +513,7 @@ public class SymTable{
 		if (type1.equals(type2)){
 			return type1;
 		}else{
-			printError("Error at line " + tree.pos + " - Performing operation on two variables of different types");
+			printError(type1 + " cannot be converted to " + type2, tree.pos);
 			return "ERR";
 		}
 	}
@@ -464,44 +523,51 @@ public class SymTable{
 		if (type1.equals(type2)){
 			return type1;
 		}else{
-			printError("Error at line " + tree.pos + " - Assigning a variable to a value of a different type");
+			printError(type1 + " cannot be converted to " + type2, tree.pos);
 			return "ERR";
 		}
 	}
 	public String createSymFromExp( IfExp tree) {
-		startBlock("If Test Condition");
-		createSymFromExp(tree.test);
-		endBlock("If Test Condition"); 
+		String type = createSymFromExp(tree.test);
+		if (!type.equals("INT")){
+			printError("Test condition of If statement must be an int", tree.pos);
+		}
 
-		startBlock("If Body");
+		startBlock("If");
 		createSymFromExp(tree.then);
-		endBlock("If Body");
+		endBlock("If");
 
-		startBlock("Else Body");
+		startBlock("Else");
 		createSymFromExp(tree.els);
-		endBlock("Else Body");
+		endBlock("Else");
 
-		return "";
+		return "VOID";
 	}
 	public String createSymFromExp( WhileExp tree) {
-		startBlock("While Test Condition");
-		createSymFromExp(tree.test);
-		endBlock("While Test Condition");
+		String type = createSymFromExp(tree.test);
+		if (!type.equals("INT")){
+			printError("Test condition of While statement must be an int", tree.pos);
+		}
 
-		startBlock("While Body");
+		startBlock("While");
 		createSymFromExp(tree.body);
-		endBlock("While Body"); 
+		endBlock("While"); 
 
-		return "";
+		return "VOID";
 	}
 	public String createSymFromExp( ReturnExp tree) {
-		return createSymFromExp(tree.exp);
+		String type = createSymFromExp(tree.exp);
+		if (type.equals(getCurrentReturnType())){
+			return type;
+		}
+		printError("Variable of type " + type + " cannot be returned by function " + getCurrentFunctionName(), tree.pos);
+		return type;
 	}
 	public String createSymFromExp( CompoundExp tree) {
 		createSymFromExp(tree.decs);
 		createSymFromExp(tree.exps);
 
-		return "";
+		return "VOID";
 	}
 
 	/* Declarations */
@@ -510,11 +576,13 @@ public class SymTable{
 		insertIntoTable(vals, s);
 		
 		startBlock("Function: " + tree.func);
+		increaseCurrentFunction(tree.func);
 
 		insertParams(vals, tree.params);
 		insertCompound(vals, tree.body);
 
 		endBlock("Function: " + tree.func);
+		decreaseCurrentFunction();
 	}
 	public void createSymFromExp( SimpleDec tree) {
 		SimpleVarSym s = new SimpleVarSym(tree.name, createSymFromExp(tree.typ), this.scope, null);
