@@ -1,9 +1,12 @@
 package symtable;
 
 public class FunSym extends Sym {
-	public SymTable child;
-	public FunSym(String name, SymTable child){
+	public int scope;
+	public String type;
+
+	public FunSym(String name, String type, int scope){
 		this.name = name;
-		this.child = child;
+		this.scope = scope;
+		this.type = type;
 	}
 }

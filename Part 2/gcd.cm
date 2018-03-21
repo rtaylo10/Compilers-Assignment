@@ -1,7 +1,13 @@
 
 int gcd(int u, int v) {
-  if (v == 0) return u;
-  else return gcd(v, u - u/v*v);
+    int d;
+    d=u/v;
+  if (v == 0){ 
+  	int x;
+  	int y;
+  	return u;
+  }
+  else return gcd(v, u - d*v);
 }
 
 void main(void) {
