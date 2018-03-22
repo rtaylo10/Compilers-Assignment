@@ -30,15 +30,20 @@ public class SymTable{
 	//Removes all values up to (and including) the specified scope for the specified name
 	public void rippleDelete(String name, int scope){
 		Sym s = lookupVal(name);
-		if (s instanceof VarSym){
-			VarSym varS = (VarSym)s;
-			while(varS.child != null){
-				if (varS.child.scope >= scope){
-					varS.child = null;
+		if (s != null){
+			if (s instanceof VarSym){
+				VarSym template = (VarSym)s;
+				VarSym varS = new VarSym(template.name, template.type, template.scope, template.child);
+				while(varS.child != null){
+					if (varS.child.scope >= scope){
+						varS.child = null;
+					}else{
+						varS = varS.child;
+					}
 				}
-			}
-			if (varS.scope >= scope){
-				delete(varS.name);
+				if (varS.scope >= scope){
+					delete(varS.name);
+				}
 			}
 		}
 	}
@@ -344,7 +349,7 @@ public class SymTable{
 	public void endBlock(String blockName){
 		if (SHOW_TABLE == true){
 			printTable();
-			System.out.println("Exiting Block " + blockName);
+			System.out.println("Exiting Block " + blockName + " at scope " + this.scope);
 		}
 		cleanTableToScope(this.scope);
 		this.scope = this.scope - 1;
@@ -472,7 +477,7 @@ public class SymTable{
 
 	public String createSymFromExp( IndexVar tree) {
 		String indexType = createSymFromExp(tree.index); 
-		String type = getDeepestType("tree.name");
+		String type = getDeepestType(tree.name);
 		if (indexType.equals("INT")){
 			//Good
 		}else{
@@ -481,7 +486,7 @@ public class SymTable{
 		if (type.equals("UND")){
 			printError("Variable " + tree.name + " is not defined", tree.pos);
 		}
-		return getDeepestType(tree.name);
+		return type;
 	}
 
   	/* Expressions */
@@ -537,9 +542,13 @@ public class SymTable{
 		createSymFromExp(tree.then);
 		endBlock("If");
 
-		startBlock("Else");
-		createSymFromExp(tree.els);
-		endBlock("Else");
+		if (tree.els != null){
+			if (!(tree.els instanceof NilExp)){
+				startBlock("Else");
+				createSymFromExp(tree.els);
+				endBlock("Else");
+			}
+		}
 
 		return "VOID";
 	}
@@ -589,7 +598,12 @@ public class SymTable{
 		insertIntoTable(vals, s);
 	}
 	public void createSymFromExp( ArrayDec tree) {
-		ArrayVarSym s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), tree.size.value, this.scope, null);
+		ArrayVarSym s;
+		if (tree.size != null){
+			s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), tree.size.value, this.scope, null);
+		}else{
+			s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), "", this.scope, null);
+		}
 		insertIntoTable(vals, s);
 	}
 }

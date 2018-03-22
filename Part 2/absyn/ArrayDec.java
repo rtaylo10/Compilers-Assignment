@@ -10,4 +10,11 @@ public class ArrayDec extends VarDec {
     this.name = name;
     this.size = size;
   }
+
+  public ArrayDec( int pos, NameTy typ, String name) {
+    this.pos = pos;
+    this.typ = typ;
+    this.name = name;
+    this.size = null;
+  }
 }
