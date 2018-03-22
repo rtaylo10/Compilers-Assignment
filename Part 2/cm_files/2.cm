@@ -1,12 +1,15 @@
-/* this c- program has two errors, and invalid statement in the while loops condition, and an invalid variable name in the second line */
+/* gcd has been set to a void return type, but still returns and int */
+void gcd(int u, int v) {
+    int d;
+    d=u/v;
+  if (v == 0){
+  	return u;
+  }
+  else return gcd(v, u - d*v);
+}
 void main(void) {
-  int x; int f1a2c;
-  x = input();
-  fac = 1;
-
-  while (sickly2) {
-    fac = fac * x;
-    x = x - 1;
-    }
-  output(fac);
+  int x; int y;
+  x = 7;
+  y = 18;
+  output(gcd(x, y));
 }

@@ -1,13 +1,20 @@
-/*This otherwise syntactically correct c- program has two invalid type names at the beginning*/
+/* function megavoid has been added to give a value to an array index. there is currently an issue where an array declaration is not counted as a declaration, but is added to the symbol table. the error itself is egregious */
+void megaVoid(void) {
+    int d;
+}
+
+int gcd(int u, int v) {
+    int d;
+    d=u/v;
+  if (v == 0){
+  	return u;
+  }
+  else return gcd(v, u - d*v);
+}
 void main(void) {
-  bad x; Snap fac;
-  x = input();
-  fac = 1;
-
-  while (x > 1) {
-    fac = fac * x;
-    x = x - 1;
-  } 
-
-  output(fac);
+  int x; int y;
+  int a[2];
+  a[megaVoid()] = 7;
+  a[1] = 18;
+  output(gcd(x, y));
 }

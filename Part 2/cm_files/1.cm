@@ -1,17 +1,15 @@
-/* A program to compute the factorial value of an input */
+/* gcd has been set to a void return type, but still returns and int */
+void gcd(int u, int v) {
+    int d;
+    d=u/v;
+  if (v == 0){
+  	return u;
+  }
+  else return gcd(v, u - d*v);
+}
 void main(void) {
-  int x; void fac; void x; int g[9];
-  x = input();
-  z = x;
-  fac = 1;
-  g[fac] = 2;
-
-  while (fac >) {
-    fac = fac * x;
-    x = x - 1;
-  } 
-
-  output(fac);
-
-  return x;
+  int x; int y;
+  x = 7;
+  y = 18;
+  output(gcd(x, y));
 }
