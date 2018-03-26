@@ -60,6 +60,16 @@ public class SymTable{
 	//Insert functions
 	//Takes the head of an AST and recursively inserts all of the relevant data into our hash table
 	public void insert(Absyn o){
+		FunSym out = null;
+		FunSym in = null;
+		if(!valExists("output")){
+			out = new FunSym("output", "VOID", 0);
+		}
+		if(!valExists("input")){
+			in = new FunSym("input", "INT", 0);
+		}
+		insertIntoTable(vals, out);
+		insertIntoTable(vals, in);
 		createSymFromExp(o);
 	}
 
@@ -301,11 +311,13 @@ public class SymTable{
 	public void printTable(){
 		Enumeration<Sym> e;
 		for(e = vals.elements(); e.hasMoreElements();){
-			Sym temp = lookupDeepestVal(e.nextElement().name);
+			String name = e.nextElement().name;
+			Sym temp = lookupDeepestVal(name);
+			int key = lookupKey(name);
 			String indentation = getSpaces(temp);
 			String symType = getSymType(temp);
 			String varType = getVarType(temp);
-			System.out.println(indentation + varType + " " + symType + ": " + temp.name);
+			System.out.println(indentation + /*key + " - " +*/ varType + " " + symType + ": " + name);
 		}
 	}
 

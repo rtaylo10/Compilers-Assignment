@@ -1,0 +1,10 @@
+void foo(void) {
+	int y;
+	y = 0;
+}
+
+void funtwo(void) {
+	int x;
+	x = 2;
+	return x;
+}
