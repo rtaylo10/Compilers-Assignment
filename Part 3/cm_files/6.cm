@@ -1,0 +1,8 @@
+/* gcd has been set to a void return type, but still returns and int */
+void main(void) {
+  int x; int y; int x;
+  x = 7;
+  y = 18;
+  z = 0;
+  output(z);
+}

@@ -1,0 +1,22 @@
+/* errors tossed all over type missmatches common */
+void megaVoid(void) {
+    int d;
+    int a[2];
+    a[1] = megaVoid();
+}
+int gcd(int u, int v) {
+    int d;
+    d=u/megaVoid();
+  if (v == 0){
+  	return u;
+  }
+  else return gcd(v, u - d*v, megaVoid());
+
+  return megaVoid();
+}
+void main(void) {
+  int x; int y;
+  x = 7;
+  y = megaVoid();
+  output(gcd(x, y));
+}

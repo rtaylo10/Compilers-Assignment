@@ -1,0 +1,18 @@
+/* megaVoid is placed into an assignment, and an equation. both properly reject it */
+void megaVoid(void) {
+int d;
+}
+int gcd(int u, int v) {
+    int d;
+    d=u/v;
+  if (v == 0){
+  	return u;
+  }
+  else return gcd(v, megaVoid() - d*v);
+}
+void main(void) {
+  int x; int y;
+  x = megaVoid();
+  y = 18;
+  output(gcd(x, y));
+}

@@ -1,0 +1,10 @@
+void foo(void) {
+	int y;
+	y = 0;
+}
+
+void main(void) { 
+	int a[2]; int x; 
+	a[x] = 1;
+	a[foo()] = 2; /* assuming void foo() */ 
+}

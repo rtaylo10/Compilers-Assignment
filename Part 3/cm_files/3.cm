@@ -1,0 +1,20 @@
+/* function megavoid has been added to give a value to an array index. there is currently an issue where an array declaration is not counted as a declaration, but is added to the symbol table. the error itself is egregious */
+void megaVoid(void) {
+    int d;
+}
+
+int gcd(int u, int v) {
+    int d;
+    d=u/v;
+  if (megaVoid()){
+  	return u;
+  }
+  else return gcd(v, u - d*v);
+}
+void main(void) {
+  int x; int y;
+  int a[2];
+  a[megaVoid()] = 7;
+  a[1] = 18;
+  output(gcd(x, y));
+}

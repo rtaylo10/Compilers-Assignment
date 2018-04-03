@@ -1,0 +1,15 @@
+void output(void){
+	int z;
+	z = 0;
+}
+
+void foo(void) {
+	int y;
+	y = 0;
+}
+
+void main(void) {
+	int x;
+	if( x ) output(foo());
+	if(foo()) output(foo());
+}
