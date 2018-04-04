@@ -535,6 +535,7 @@ public class SymTable{
 	public String createSymFromExp( OpExp tree) {
 		String type1 = createSymFromExp( tree.left );
 		String type2 = createSymFromExp( tree.right ); 
+
 		if (type1.equals(type2)){
 			return type1;
 		}else{
@@ -545,6 +546,34 @@ public class SymTable{
 	public String createSymFromExp( AssignExp tree) {
 		String type1 = createSymFromExp(tree.lhs);
 		String type2 = createSymFromExp(tree.rhs);
+
+		if (tree.lhs instanceof VarExp && tree.rhs instanceof OpExp){
+			String varAssign = ((VarExp)(tree.lhs)).variable.name;
+			if (((OpExp)(tree.rhs)).left instanceof VarExp){
+				String var1 = ((VarExp)(((OpExp)(tree.rhs)).left)).variable.name;
+				if ((((OpExp)(tree.rhs)).right) instanceof VarExp){
+					String var2 = ((VarExp)(((OpExp)(tree.rhs)).right)).variable.name;
+					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+					a.addAssign(assign);
+				}else if ((((OpExp)(tree.rhs)).right) instanceof IntExp){
+					int var2 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
+					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+					a.addAssign(assign);
+				}
+			}else if (((OpExp)(tree.rhs)).left instanceof IntExp){
+				int var1 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
+				if ((((OpExp)(tree.rhs)).right) instanceof VarExp){
+					String var2 = ((VarExp)(((OpExp)(tree.rhs)).right)).variable.name;
+					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+					a.addAssign(assign);
+				}else if ((((OpExp)(tree.rhs)).right) instanceof IntExp){
+					int var2 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
+					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+					a.addAssign(assign);
+				}
+			}
+		}
+		
 		if (type1.equals(type2)){
 			return type1;
 		}else{
@@ -616,7 +645,7 @@ public class SymTable{
 	public void createSymFromExp( SimpleDec tree) {
 		Declaration d = new Declaration(tree.name);
 		SimpleVarSym s = new SimpleVarSym(tree.name, createSymFromExp(tree.typ), this.scope, null, d.memLoc);
-		
+
 		insertIntoTable(vals, s);
 		a.addDeclaration(d);
 	}

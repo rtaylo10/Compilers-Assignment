@@ -35,8 +35,8 @@ public class Assembler {
         instructionTracker = 3;
     }
 
-    public void addAssign(){
-
+    public void addAssign(Assignment a){
+    	/*Do stuff*/
     }
 
     public String getDecType(Declaration d){
