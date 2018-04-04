@@ -44,4 +44,16 @@ public class Assignment {
         control = 4;
         System.out.println("you have added " + variableAss +  " = " +this.variableOp1  + ' ' + this.op + " " + this.variableOp2 );
     }
+    public Assignment(String assign, String a) {
+        this.variableOp1 = a;
+        this.variableAss = assign;
+        control = 5;
+        System.out.println("you have added " + variableAss +  " = " +this.variableOp1 );
+    }
+    public Assignment(String assign, int a) {
+        this.a = a;
+        this.variableAss = assign;
+        control = 6;
+        System.out.println("you have added " + variableAss +  " = " +this.variableOp1 );
+    }
 }

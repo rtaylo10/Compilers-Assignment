@@ -572,6 +572,14 @@ public class SymTable{
 					a.addAssign(assign);
 				}
 			}
+		}else if (tree.lhs instanceof VarExp && tree.rhs instanceof VarExp){
+			String varLeft = ((VarExp)(tree.lhs)).variable.name;
+			String varRight = ((VarExp)(tree.rhs)).variable.name;
+			Assignment assign = new Assignment(varLeft, varRight);
+		}else if (tree.lhs instanceof VarExp && tree.rhs instanceof IntExp){
+			String varLeft = ((VarExp)(tree.lhs)).variable.name;
+			String varRight = ((IntExp)(tree.rhs)).value;
+			Assignment assign = new Assignment(varLeft, varRight);
 		}
 		
 		if (type1.equals(type2)){
