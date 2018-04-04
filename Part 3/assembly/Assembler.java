@@ -3,6 +3,7 @@ package assembly;
 import absyn.*;
 import symtable.*;
 import java.util.*;
+import java.io.*;
 
 public class Assembler {
 
@@ -15,7 +16,7 @@ public class Assembler {
 	public Assembler(SymTable s){
 		symbols = s;
 	}
-
+    public static int instructionTracker = 0;
     public void output() {
         System.out.println("output statement");
     }
@@ -24,11 +25,14 @@ public class Assembler {
     }
     /*Previously in finale.java*/
     public void end() {
-        System.out.println("This is the end of the assembly code");
+        System.out.println(instructionTracker + ":  HALT    0,0,0");
     }
     /*Previously in prelude.java*/
     public void start() {
-        System.out.println("This is the start of the assembly code");
+        System.out.println("0:  LD 6,0(0)");
+        System.out.println("1:  LDA 5,0(6)");
+        System.out.println("2:  ST 0,0(0)");
+        instructionTracker = 3;
     }
 
     public void addAssign(){
