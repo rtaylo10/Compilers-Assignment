@@ -1,6 +1,7 @@
 package symtable;
 
 import absyn.*;
+import assembly.*;
 import java.util.*;
 
 public class SymTable{
@@ -33,7 +34,7 @@ public class SymTable{
 		if (s != null){
 			if (s instanceof VarSym){
 				VarSym template = (VarSym)s;
-				VarSym varS = new VarSym(template.name, template.type, template.scope, template.child);
+				VarSym varS = new VarSym(template.name, template.type, template.scope, template.child, template.memLoc);
 				while(varS.child != null){
 					if (varS.child.scope >= scope){
 						varS.child = null;
@@ -484,6 +485,7 @@ public class SymTable{
 		if (type.equals("UND")){
 			printError("Variable " + tree.name + " is not defined", tree.pos);
 		}
+
 		return type;
 	}
 
@@ -606,15 +608,17 @@ public class SymTable{
 		decreaseCurrentFunction();
 	}
 	public void createSymFromExp( SimpleDec tree) {
-		SimpleVarSym s = new SimpleVarSym(tree.name, createSymFromExp(tree.typ), this.scope, null);
+		Declaration d = new Declaration(tree.name);
+		SimpleVarSym s = new SimpleVarSym(tree.name, createSymFromExp(tree.typ), this.scope, null, d.memLoc);
 		insertIntoTable(vals, s);
 	}
 	public void createSymFromExp( ArrayDec tree) {
 		ArrayVarSym s;
+		Declaration d = new Declaration(tree.name);
 		if (tree.size != null){
-			s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), tree.size.value, this.scope, null);
+			s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), tree.size.value, this.scope, null, d.memLoc);
 		}else{
-			s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), "", this.scope, null);
+			s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), "", this.scope, null, d.memLoc);
 		}
 		insertIntoTable(vals, s);
 	}

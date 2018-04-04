@@ -1,9 +1,9 @@
 package assembly;
 
-public class declaration {
+public class Declaration {
     public String varName;
     public static int memLoc;
-    public declaration (String varName) {
+    public Declaration (String varName) {
         this.varName = varName;
         //increment memlock
         System.out.println( "added " + varName + " at location" + memLoc);
