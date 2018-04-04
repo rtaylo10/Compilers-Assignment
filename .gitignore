@@ -8,3 +8,17 @@
 *.so
 *.java~
 Lexer.java
+*.cm
+*.cup
+Part 3/out/production/Part 3/java-cup-11b-runtime.jar
+Part 3/out/production/Part 3/Checkpoint-Two-Cis-4650.pdf
+Part 3/out/production/Part 3/.idea/modules.xml
+Part 3/out/production/Part 3/.idea/libraries/Part_3.xml
+Part 3/out/production/Part 3/.idea/workspace.xml
+Part 3/out/production/Part 3/java-cup-11b.jar
+Part 3/out/production/Part 3/.idea/misc.xml
+Part 3/out/production/Part 3/Makefile
+Part 3/out/production/Part 3/module_cminuscomp.xml
+Part 3/out/production/Part 3/Part 3.iml
+Part 3/out/production/Part 3/README
+Part 3/.idea/workspace.xml
