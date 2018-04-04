@@ -14,9 +14,15 @@ public class SymTable{
 	public Hashtable<Integer, Sym> vals;
 	public int scope = 0;
 	public FunSym currentFunction;
+	public Assembler a;
 
 	public SymTable(){
 		vals = new Hashtable<Integer, Sym>();
+	}
+
+	public SymTable(Assembler a){
+		vals = new Hashtable<Integer, Sym>();
+		this.a = a;
 	}
 
 	public void generate(Object o){
@@ -610,7 +616,9 @@ public class SymTable{
 	public void createSymFromExp( SimpleDec tree) {
 		Declaration d = new Declaration(tree.name);
 		SimpleVarSym s = new SimpleVarSym(tree.name, createSymFromExp(tree.typ), this.scope, null, d.memLoc);
+		
 		insertIntoTable(vals, s);
+		a.addDeclaration(d);
 	}
 	public void createSymFromExp( ArrayDec tree) {
 		ArrayVarSym s;
@@ -620,6 +628,8 @@ public class SymTable{
 		}else{
 			s = new ArrayVarSym(tree.name, createSymFromExp(tree.typ), "", this.scope, null, d.memLoc);
 		}
+
 		insertIntoTable(vals, s);
+		a.addDeclaration(d);
 	}
 }
