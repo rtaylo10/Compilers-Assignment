@@ -7,6 +7,8 @@ import java.io.*;
 
 public class Assembler {
 
+    public static boolean SHOW_ASSEMBLER = false;
+
 	/*Stores the symbol table created from part 2 in here, that way you can work on this part without worrying about the symbol table functions getting in the way*/
 	public SymTable symbols;
 
@@ -35,8 +37,67 @@ public class Assembler {
         instructionTracker = 3;
     }
 
-    public void addAssign(Assignment a){
-    	/*Do stuff*/
+    public void printMessage(String s){
+        if (SHOW_ASSEMBLER == true){
+            System.out.println(s);
+        }
+    }
+
+    public void addAssign(AssignExp tree){
+        Assignment assign = null;
+    	if (tree.lhs instanceof VarExp && tree.rhs instanceof OpExp){
+            String varAssign = ((VarExp)(tree.lhs)).variable.name;
+            if (((OpExp)(tree.rhs)).left instanceof VarExp){
+                String var1 = ((VarExp)(((OpExp)(tree.rhs)).left)).variable.name;
+                if ((((OpExp)(tree.rhs)).right) instanceof VarExp){
+                    String var2 = ((VarExp)(((OpExp)(tree.rhs)).right)).variable.name;
+                    assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+
+                    String message = "you have added " + assign.variableAss +  " = " +assign.variableOp1  + ' ' + assign.op + " " + assign.variableOp2;
+                    printMessage(message);
+                }else if ((((OpExp)(tree.rhs)).right) instanceof IntExp){
+                    int var2 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
+                    assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+
+                    String message = "you have added " + assign.variableAss +  " = " + assign.variableOp1  + ' ' + assign.op + " " + assign.b;
+                    printMessage(message);
+                }
+            }else if (((OpExp)(tree.rhs)).left instanceof IntExp){
+                int var1 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
+                if ((((OpExp)(tree.rhs)).right) instanceof VarExp){
+                    String var2 = ((VarExp)(((OpExp)(tree.rhs)).right)).variable.name;
+                    assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+
+                    String message = "you have added " + assign.variableAss +  " = " + assign.a  + ' ' + assign.op + " " + assign.variableOp2;
+                    printMessage(message);
+                }else if ((((OpExp)(tree.rhs)).right) instanceof IntExp){
+                    int var2 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
+                    assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
+
+                    String message = "you have added " + assign.variableAss +  " = " + assign.a  + ' ' + assign.op + " " + assign.b;
+                    printMessage(message);
+                }
+            }
+        }else if (tree.lhs instanceof VarExp && tree.rhs instanceof VarExp){
+            String varLeft = ((VarExp)(tree.lhs)).variable.name;
+            String varRight = ((VarExp)(tree.rhs)).variable.name;
+            assign = new Assignment(varLeft, varRight);
+
+            String message = "you have added " + assign.variableAss +  " = " + assign.variableOp1;
+            printMessage(message);
+        }else if (tree.lhs instanceof VarExp && tree.rhs instanceof IntExp){
+            String varLeft = ((VarExp)(tree.lhs)).variable.name;
+            String varRight = ((IntExp)(tree.rhs)).value;
+            assign = new Assignment(varLeft, varRight);
+
+            String message = "you have added " + assign.variableAss +  " = " + assign.variableOp1;
+            printMessage(message);
+        }
+
+        if (assign != null){
+            Assignment a = assign;
+            /*Do your thing here*/
+        }
     }
 
     public String getDecType(Declaration d){
@@ -66,7 +127,8 @@ public class Assembler {
 
     public void addDeclaration(Declaration d){
     	/*Declaration has been created, now do what you want with it (At the moment this is called every time a VarDec has been found in the tree)*/
-
+        String message = "added " + d.varName + " at location" + d.memLoc;
+        printMessage(message);
 
     }
     public void addFunction(){
