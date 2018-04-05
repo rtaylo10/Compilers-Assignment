@@ -6,7 +6,6 @@ public class Declaration {
     public Declaration (String varName) {
         this.varName = varName;
         //increment memlock
-        System.out.println( "added " + varName + " at location" + memLoc);
         memLoc = memLoc+4;
         
     }

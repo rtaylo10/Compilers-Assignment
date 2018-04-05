@@ -18,7 +18,6 @@ public class Assignment {
         this.variableAss = assign;
         this.op = op;
         control = 1;
-        System.out.println("you have added " + variableAss +  " = " +this.a  + ' ' + this.op + " " + this.b );
     }
     public Assignment(String assign, String a, int b, int op) {
         this.variableOp1 = a;
@@ -26,7 +25,6 @@ public class Assignment {
         this.variableAss = assign;
         this.op = op;
         control = 2;
-        System.out.println("you have added " + variableAss +  " = " +this.variableOp1  + ' ' + this.op + " " + this.b );
     }
     public Assignment(String assign, int a, String b, int op) {
         this.a = a;
@@ -34,7 +32,6 @@ public class Assignment {
         this.variableAss = assign;
         this.op = op;
         control = 3;
-        System.out.println("you have added " + variableAss +  " = " +this.a  + ' ' + this.op + " " + this.variableOp2 );
     }
     public Assignment(String assign, String a, String b, int op) {
         this.variableOp1 = a;
@@ -42,18 +39,15 @@ public class Assignment {
         this.variableAss = assign;
         this.op = op;
         control = 4;
-        System.out.println("you have added " + variableAss +  " = " +this.variableOp1  + ' ' + this.op + " " + this.variableOp2 );
     }
     public Assignment(String assign, String a) {
         this.variableOp1 = a;
         this.variableAss = assign;
         control = 5;
-        System.out.println("you have added " + variableAss +  " = " +this.variableOp1 );
     }
     public Assignment(String assign, int a) {
         this.a = a;
         this.variableAss = assign;
         control = 6;
-        System.out.println("you have added " + variableAss +  " = " +this.variableOp1 );
     }
 }

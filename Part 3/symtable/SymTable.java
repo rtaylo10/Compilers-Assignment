@@ -547,40 +547,7 @@ public class SymTable{
 		String type1 = createSymFromExp(tree.lhs);
 		String type2 = createSymFromExp(tree.rhs);
 
-		if (tree.lhs instanceof VarExp && tree.rhs instanceof OpExp){
-			String varAssign = ((VarExp)(tree.lhs)).variable.name;
-			if (((OpExp)(tree.rhs)).left instanceof VarExp){
-				String var1 = ((VarExp)(((OpExp)(tree.rhs)).left)).variable.name;
-				if ((((OpExp)(tree.rhs)).right) instanceof VarExp){
-					String var2 = ((VarExp)(((OpExp)(tree.rhs)).right)).variable.name;
-					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
-					a.addAssign(assign);
-				}else if ((((OpExp)(tree.rhs)).right) instanceof IntExp){
-					int var2 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
-					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
-					a.addAssign(assign);
-				}
-			}else if (((OpExp)(tree.rhs)).left instanceof IntExp){
-				int var1 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
-				if ((((OpExp)(tree.rhs)).right) instanceof VarExp){
-					String var2 = ((VarExp)(((OpExp)(tree.rhs)).right)).variable.name;
-					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
-					a.addAssign(assign);
-				}else if ((((OpExp)(tree.rhs)).right) instanceof IntExp){
-					int var2 = Integer.parseInt(((IntExp)(((OpExp)(tree.rhs)).left)).value);
-					Assignment assign = new Assignment(varAssign, var1, var2, ((OpExp)(tree.rhs)).op);
-					a.addAssign(assign);
-				}
-			}
-		}else if (tree.lhs instanceof VarExp && tree.rhs instanceof VarExp){
-			String varLeft = ((VarExp)(tree.lhs)).variable.name;
-			String varRight = ((VarExp)(tree.rhs)).variable.name;
-			Assignment assign = new Assignment(varLeft, varRight);
-		}else if (tree.lhs instanceof VarExp && tree.rhs instanceof IntExp){
-			String varLeft = ((VarExp)(tree.lhs)).variable.name;
-			String varRight = ((IntExp)(tree.rhs)).value;
-			Assignment assign = new Assignment(varLeft, varRight);
-		}
+		a.addAssign(tree);
 		
 		if (type1.equals(type2)){
 			return type1;
