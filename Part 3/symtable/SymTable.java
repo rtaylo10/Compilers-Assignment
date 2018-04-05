@@ -315,6 +315,18 @@ public class SymTable{
 		}
 	}
 
+	public int getVarScope(Sym s){
+		if(s instanceof ArrayVarSym){
+			return ((ArrayVarSym)s).scope;
+		}else if(s instanceof FunSym){
+			return ((FunSym)s).scope;
+		}else if(s instanceof SimpleVarSym){
+			return ((SimpleVarSym)s).scope;
+		}else{
+			return -1;
+		}
+	}
+
 	public void printTable(){
 		Enumeration<Sym> e;
 		for(e = vals.elements(); e.hasMoreElements();){
@@ -324,7 +336,11 @@ public class SymTable{
 			String indentation = getSpaces(temp);
 			String symType = getSymType(temp);
 			String varType = getVarType(temp);
-			System.out.println(indentation + /*key + " - " +*/ varType + " " + symType + ": " + name);
+			int symScope = getVarScope(temp);
+
+			if (symScope == scope){
+				System.out.println(indentation + /*key + " - " +*/ varType + " " + symType + ": " + name);
+			}
 		}
 	}
 
@@ -358,7 +374,7 @@ public class SymTable{
 
 	public void endBlock(){
 		if (SHOW_TABLE == true){
-			printTable();
+			// printTable();
 			System.out.println("Exiting Block");
 		}
 		cleanTableToScope(this.scope);
@@ -367,7 +383,7 @@ public class SymTable{
 
 	public void endBlock(String blockName){
 		if (SHOW_TABLE == true){
-			printTable();
+			// printTable();
 			System.out.println("Exiting Block " + blockName + " at scope " + this.scope);
 		}
 		cleanTableToScope(this.scope);
