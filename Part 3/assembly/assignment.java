@@ -41,9 +41,30 @@ public class Assignment {
         control = 4;
     }
     public Assignment(String assign, String a) {
+        Assembler temp = new Assembler();
+        int instruction = temp.instructionTracker;
+        Declaration assignDec = temp.getDec(assign);
+        Declaration aDec = temp.getDec(a);
+        int fp = aDec.getmemLoc();
+        int memAssign = assignDec.memoryLocation;
+        int memA = aDec.memoryLocation;
+        int offsetAssign = fp-memAssign;
+        int offsetA = fp = memA;
+        System.out.println("* evalutating "+  assign + " = " + a);
         this.variableOp1 = a;
         this.variableAss = assign;
+        System.out.println("* Loading " + assign);
+        System.out.println(instruction + ": LDA  0,-" + offsetAssign + "(5)");
+        instruction++;
+        System.out.println("* Loading " + a);
+        System.out.println(instruction + ": LD  1,-" + offsetA +"(5)");
+        instruction++;
+        System.out.println(instruction + ": ST  0,0(1)");
+        instruction++;
+        temp.instructionTracker = instruction;
+
         control = 5;
+
     }
     public Assignment(String assign, int a) {
         Assembler temp = new Assembler();
