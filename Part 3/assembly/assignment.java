@@ -50,11 +50,21 @@ public class Assignment {
         Declaration oldDec = temp.getDec(assign);
         int memLoc = oldDec.memoryLocation;
         int fp = oldDec.getmemLoc();
+        int offset = fp - memLoc;
+        int instruction = temp.instructionTracker;
 
         this.a = a;
         this.variableAss = assign;
         control = 6;
         System.out.println("* evaluating " + variableAss +  " = " +this.a );
         System.out.println("* loading " + variableAss);
+        System.out.println(instruction + ": LDA " + "0,-" + offset + "(5)" );
+        instruction++;
+        System.out.println(instruction + ": LDC " + "1," +  a + "(0)" );
+        instruction++;
+        System.out.println(instruction + ": ST  0,0(1)");
+        instruction++;
+        temp.instructionTracker = instruction;
+
     }
 }
