@@ -13,9 +13,37 @@ public class Assignment {
     public int control = 0;
 // for op, send in values, mul, div, add, min
     public Assignment(String assign, int a, int b, int op) {
-        this.a = a;
-        this.b = b;
+        Assembler temp = new Assembler();
+        Declaration oldDec = temp.getDec(assign);
+        int memLoc = oldDec.memoryLocation;
+        int fp = oldDec.getmemLoc();
+        int offset = fp - memLoc;
+        int instruction = temp.instructionTracker;
+        int c;
         this.variableAss = assign;
+        switch (op) {
+            case 0: c = a+b;
+                    break;
+            case 1: c = a-b;
+                    break;
+            case 2: c = a*b;
+                    break;
+            case 3: c = Math.round(a/b);
+                    break;
+            default: System.out.println("unsupported operation.");
+                    c=0;
+                    break;
+
+        }
+        System.out.println("* evaluating " + variableAss +  " = " +this.a );
+        System.out.println("* loading " + variableAss);
+        System.out.println(instruction + ": LDA " + "0,-" + offset + "(5)" );
+        instruction++;
+        System.out.println(instruction + ": LDC " + "1," +  c + "(0)" );
+        instruction++;
+        System.out.println(instruction + ": ST  0,0(1)");
+        instruction++;
+        temp.instructionTracker = instruction;
         this.op = op;
         control = 1;
     }
