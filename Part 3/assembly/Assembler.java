@@ -11,7 +11,7 @@ public class Assembler {
 
 	/*Stores the symbol table created from part 2 in here, that way you can work on this part without worrying about the symbol table functions getting in the way*/
 	public SymTable symbols;
-
+    public static List<Declaration> memory = new ArrayList<>();
 	public Assembler(){
 		symbols = null;
 	}
@@ -128,6 +128,7 @@ public class Assembler {
     public void addDeclaration(Declaration d){
     	/*Declaration has been created, now do what you want with it (At the moment this is called every time a VarDec has been found in the tree)*/
         String message = "added " + d.varName + " at location" + d.memLoc;
+        memory.add(d);
         printMessage(message);
 
     }
@@ -140,4 +141,14 @@ public class Assembler {
     public void addWhile(){
 
     }
+    public Declaration getDec(String decName) {
+        for (int i=0; i<memory.size(); i++) {
+            if (memory.get(i).varName.equals(decName)) {
+                return memory.get(i);
+            }
+
+        }
+        return (null);
+    }
+
 }

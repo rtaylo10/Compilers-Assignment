@@ -46,8 +46,15 @@ public class Assignment {
         control = 5;
     }
     public Assignment(String assign, int a) {
+        Assembler temp = new Assembler();
+        Declaration oldDec = temp.getDec(assign);
+        int memLoc = oldDec.memoryLocation;
+        int fp = oldDec.getmemLoc();
+
         this.a = a;
         this.variableAss = assign;
         control = 6;
+        System.out.println("* evaluating " + variableAss +  " = " +this.a );
+        System.out.println("* loading " + variableAss);
     }
 }
